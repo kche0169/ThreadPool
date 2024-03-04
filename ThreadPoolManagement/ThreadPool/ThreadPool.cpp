@@ -56,7 +56,12 @@ void ThreadPool::execute_tasks() {
 			// 锁住队列
 			// 在满足条件之前释放
 			cv.wait(lock, [this] { return stop || !tasks.empty(); });
+			// 功能解释
+// cv.wait(lock, [this] { return stop || !tasks.empty(); });的使用使得工作线程在以下情况下会被唤醒：
 
+// 有新的任务被添加到任务队列中（此时tasks.empty()为false）。
+// 线程池正在被销毁，需要停止所有工作线程（此时stop为true）。
+// 在这两种情况之外，工作线程会处于等待状态，不会消耗CPU资源。这种设计提高了效率，避免了在没有任务时工作线程忙等（busy-waiting）的问题。
 			if (stop && tasks.empty()) {
 				return;
 			}
