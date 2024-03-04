@@ -23,18 +23,19 @@
 ### 加入任务
 不告诉你
 
-ThreadPool 类
-构造函数 (ThreadPool::ThreadPool())： 初始化线程池，创建固定数量（InitThreadNum，未在代码段中定义，假设为某个常量）的工作线程。每个工作线程都会执行execute_tasks成员函数，这个函数负责从任务队列中取出任务并执行。
+## 项目结构
+### ThreadPool 类
+#### 构造函数 (ThreadPool::ThreadPool())： 初始化线程池，创建固定数量（InitThreadNum，未在代码段中定义，假设为某个常量）的工作线程。每个工作线程都会执行execute_tasks成员函数，这个函数负责从任务队列中取出任务并执行。
 
-析构函数 (ThreadPool::~ThreadPool())： 在销毁线程池时，首先设置一个标志（stop）来通知所有工作线程停止执行。然后，它会唤醒所有可能正在等待条件变量的线程，并等待所有工作线程完成当前任务并退出。
+#### 析构函数 (ThreadPool::~ThreadPool())： 在销毁线程池时，首先设置一个标志（stop）来通知所有工作线程停止执行。然后，它会唤醒所有可能正在等待条件变量的线程，并等待所有工作线程完成当前任务并退出。
 
-添加任务 (void ThreadPool::add_task(const std::function<void()>& task))： 允许外部添加任务到线程池的任务队列中。每个任务是一个不接受参数并返回void的函数（std::function<void()>类型）。添加任务后，使用条件变量通知一个正在等待的工作线程。
+#### 添加任务 (void ThreadPool::add_task(const std::function<void()>& task))： 允许外部添加任务到线程池的任务队列中。每个任务是一个不接受参数并返回void的函数（std::function<void()>类型）。添加任务后，使用条件变量通知一个正在等待的工作线程。
 
-执行任务 (void ThreadPool::execute_tasks())： 工作线程执行的函数。它不断地从任务队列中取出任务并执行，直到线程池被销毁（即stop被设置为true且任务队列为空）。
+#### 执行任务 (void ThreadPool::execute_tasks())： 工作线程执行的函数。它不断地从任务队列中取出任务并执行，直到线程池被销毁（即stop被设置为true且任务队列为空）。
 
-显示线程ID (void ThreadPool::show_threads())： 打印出所有工作线程的ID，用于调试目的。
+#### 显示线程ID (void ThreadPool::show_threads())： 打印出所有工作线程的ID，用于调试目的。
 
-主函数 (int main())：
+### 主函数 (int main())：
 创建一个ThreadPool对象。
 使用ThreadPool对象的show_threads方法打印出所有工作线程的ID。
 循环10次，交替添加两种类型的任务到线程池：一种直接打印信息，另一种先等待200毫秒再打印信息。
